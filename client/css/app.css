@@ -1,0 +1,124 @@
+/* app css stylesheet */
+html{
+  font-size:14px;
+}
+body{
+  font-family: arial;
+}
+body, div, input, textarea, p, span{
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+input, textarea{
+  font-size: 1rem;
+}
+
+.btn{
+  background: #5CF;
+  border: 1px solid #0AF;
+  border-radius: 2px;
+  
+}
+.btn:hover{
+  box-shadow: 0 0 0.2em #0AF;
+}
+.toasts{
+  position: fixed;
+  bottom: 1em; left: 1em; right: 1em;
+  width: 70%;
+  margin: 0 auto;
+  border-radius: 0.2em;
+  
+  box-shadow: 0 0.4em 0.4em rgba(0,0,0,0.4);
+}
+
+.toast{
+  padding: 0.5em;
+}
+.toast.fail{
+  background: #FCC;
+  border: 1px solid #CAA;
+  color: #300;
+}
+.toast.warn{
+  background: #FFC;
+  border: 1px solid #CCA;
+  color: #330;
+}
+.toast.ok{
+  background: #EEE;
+  border: 1px solid #AAA;
+  color: #333;
+}
+
+
+/* Login View */
+
+.login{
+  position: fixed;
+  top:0; bottom:0; left:0; right:0;
+  
+  background-color: rgb(255,255,255);
+  background-color: rgba(255,255,255,0.8);
+}
+.login-form{
+  margin: 4em auto;
+  
+  background: white;
+  border-radius: 1em;
+  width: 20em;
+  padding: 1em 2em;
+  
+  box-shadow: 0 0.2em 0.5em rgba(0,0,0,0.3);
+}
+
+
+
+.users a{
+  display: block;
+  width: 100%;
+  padding: 0.2em;
+}
+
+
+
+
+.message, .user{
+  padding: 0.3em;
+}
+.message time{
+  float: right;
+  font-size: 0.6rem;
+  line-height: 1.4rem;
+
+  color: #aaa;
+}
+span.username{
+  font-weight: bold;
+}
+
+
+.message-input{
+  width:100%;
+}
+.message-send{
+  width:100%;
+}
+
+
+
+
+
+
+
+
+
+.overflowable {
+  height:20rem;
+  overflow-y: auto;
+  border: 1px solid #000;
+}
+
+.overflowable p {
+  margin: 0;
+}

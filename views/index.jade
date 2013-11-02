@@ -1,0 +1,46 @@
+extends layout
+
+block body
+  div.container(ng-controller='ChatCtrl')
+    .login(ng-show='loginScreen')
+      .login-form
+        h3 Podaj swój nick
+        form(ng-submit='logIn()')
+          input#loginField(placeholder='Jak chcesz się nazywać?',ng-model='name')
+          input(type='submit', value='Wejdź')
+    .row
+      form(ng-submit='sendMessage()')
+        .col.span_8 
+          input(class='message-input',ng-model='message')
+        .col.span_1
+          input(class='message-send',type='submit', value='Send')
+        .col.span_3
+    .row
+      .col.span_9
+        .overflowable.messages
+          div.message(ng-repeat='msg in messages | reverse')
+            time {{msg.timeStamp}}
+            p
+              span.username {{msg.user.name}}: 
+              | {{msg.text}}
+      .col.span_3
+        .overflowable.users
+          div.user(ng-repeat='u in users')
+            p
+              a {{u.name}}
+    .row
+      .col.span_12
+        h3 Change your name
+        p Your current user name is {{name}}
+        form(ng-submit='changeName()')
+          input(ng-model='newName')
+          input(type='submit', value='Change Name')
+
+  script(src='/socket.io/socket.io.js')
+  script(src='/bower_components/angular/angular.js')
+  script(src='/bower_components/angular-socket-io/socket.js')
+  script(src='/js/chat.js')
+  script(src='/js/services.js')
+  script(src='/js/controllers.js')
+  script(src='/js/filters.js')
+  script(src='/js/directives.js')
