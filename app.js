@@ -11,7 +11,8 @@ var routes = require('./routes');
 
 var socket = require('./controllers/socket.js');
 var users = require('./controllers/User.js');
-console.log(users.addUser({ id: 'server', name: 'Server', group:'admin'} ));
+users.addUser({ id: 'server', name: 'Server', group:'admin'} );
+
 var messages = require('./controllers/Message.js');
 
 

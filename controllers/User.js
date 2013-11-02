@@ -5,6 +5,9 @@ var config = require('../config');
 
 
 
+//console.log( 'USERS: initing', moment().format('YYYYMMDDHHmmssSS') );
+
+
 function User(id, name, group){
   this.id = id;
   this.name = name;
@@ -18,18 +21,6 @@ function User(id, name, group){
 }
 User.prototype = {
   constructor: User
-  // TODO: changing names
-  /*get id(){
-    return this._id;
-  },
-
-  get name(){
-    return this._name;
-  },
-
-  get group(){
-    return this._group;
-  },*/
 }
 
 
@@ -39,12 +30,13 @@ var users = (function () {
   var _errors = [];
   var _updating = false;
 
-  var list = function() {
+  /*var list = function() {
     return _list;
-  };
+  };*/
+  /*
   var errors = function(){
     return _errors;
-  }
+  }*/
   var addUser = function(o){
     _errors = [];
     // TODO: check if user ID already is logged in
@@ -69,19 +61,23 @@ var users = (function () {
     };
     
     if(_errors.length > 0){
-      return _errors;
+      return { status: 'fail', data: _errors };
     }else{
       var newGuy = new User(o.id, o.name);
-      _list[o.id] = newGuy;
+      //_list[o.id] = newGuy;
+      _list.push(newGuy);
 
-      return newGuy;
+      /*console.log( 'USERS: added new user', moment().format('YYYYMMDDHHmmssSS') );
+      console.log( _list );*/
+
+      return {status: 'ok', data: newGuy };
     }
   }
-  var removeUser = function(name){
+  var removeUser = function(id){
     for(var i = _list.length - 1; i >= 0; i--) {
-      if(_list[i].name === name) {
-        // _list.splice(i, 1);
-        delete _list[i];
+      if(_list[i].id === id) {
+        _list.splice(i, 1);
+        //delete _list[i];
       }
     }
   };
@@ -115,8 +111,8 @@ var users = (function () {
   }
 
   return {
-    list: list,
-    errors: errors,
+    list: _list,
+    errors: _errors,
     addUser: addUser,
     removeUser: removeUser,
     changeName: changeName,
@@ -126,3 +122,4 @@ var users = (function () {
 }());
 
 module.exports = users;
+//exports.list = users;

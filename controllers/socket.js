@@ -32,18 +32,14 @@ module.exports = function (socket) {
   //socket.set('loggedIn', false);
   //socket.emit('connect', {status:'ok', info: "Połączono z serwerem"});
   socket.on('user:login', function(data, fn) {
-    console.log(data.name, ' is trying to log in.');
+    //console.log(data.name, ' is trying to log in.');
     
     var user = users.addUser({name: data.name, id: socket.id});
     
-    if( user ){
+    if( user.status === 'ok' ){
       //socket.set('loggedIn', true);
 
-      // send the new user their name //NOPE:and a list of users
-      /*socket.emit('init', {
-        user: user,
-        users: users.list()
-      });*/
+      user = user.data;
 
       // notify other clients that a new user has joined
       socket.broadcast.emit('user:join', {
@@ -73,7 +69,7 @@ module.exports = function (socket) {
         }
       });
       // validate a user's name change, and broadcast it on success
-      socket.on('change:name', function (data, fn) {
+      /*socket.on('change:name', function (data, fn) {
         if (users.changeName(user.id, data.name)) {
           oldName = user.name;
           name = data.name;
@@ -85,31 +81,29 @@ module.exports = function (socket) {
 
           fn(true);
         } else {
-          console.log('USER', user, 'Has failed to change his name.')
+          console.log('USER:', user, 'Has failed to change his name.')
           fn(false);
         }
-      });
+      });*/
       
       
       //socket.broadcast.emit('user '+socket.get('name')+' connected');
-      socket.emit('message', {
-        user: {name:'Server', id:'server'}, message: 'Witam na chacie!'
-      });
-
+      console.log('USERS: list', users.list);
+      //var usersList = users.list;
       fn({status:'ok', data:{
           user: user,
-          users: users.list()
+          users: users.list
         }
       });
     }else{
-      fn({status:'fail', data:users.errors()});
+      fn({status:'fail', data:users.errors});
     }
     
     socket.on('disconnect', function() {
       socket.broadcast.emit('user:left', {
         name: user.name
       });
-      users.removeUser(user);
+      users.removeUser(user.id);
     });
   });
 

@@ -27,12 +27,12 @@ function ChatCtrl($scope, socket) {
     changeName(data.oldName, data.newName);
   });
 
-  socket.on('user:join', function (data) {
+  socket.on('user:join', function (result) {
     $scope.messages.push({
       user: 'chatroom',
-      text: 'User ' + data.user.name + ' has joined.'
+      text: 'User ' + result.user.name + ' has joined.'
     });
-    $scope.users.push(data.user);
+    $scope.users.push(result.user);
   });
 
   // add a message to the conversation when a user disconnects or leaves the room
@@ -83,8 +83,8 @@ function ChatCtrl($scope, socket) {
         });*/
         //$scope.users.push(result.data);
 
-        $scope.user = result.user;
-        $scope.users.concat(result.users);
+        $scope.user = result.data.user;
+        $scope.users = result.data.users;
 
         $scope.loginScreen = false;
       }
