@@ -16,6 +16,17 @@ config.antiFlood = {
   border: 5000
 }
 
+config.user = {
+  name: {
+    min_length: 2
+  }
+}
+
+config.message = {
+  txt: {
+    min_length: 2
+  }
+}
 
 config.groups = {
   "guest": {},

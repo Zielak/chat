@@ -5,10 +5,10 @@ var config = require('../config');
 
 
 
-function Message(user, text){
+function Message(user, txt){
   //this.id = id;
   this.user = user;
-  this.text = text;
+  this.txt = txt;
 
   this.timeStamp = moment().format('YYYYMMDDHHmmssSS');
 }
@@ -21,40 +21,45 @@ Message.prototype = {
 var messages = (function () {
 //module.exports = function(){
   var _list = [];
-  var _errors = [];
+  // whats that updating for? wtf?
   var _updating = false;
+  
 
-  var list = function() {
-    return _list;
-  };
-  var errors = function(){
-    return _errors;
-  }
-  var addMessage = function(user, text){
-    _errors = [];
-
-    // sanitize without warning..
-    text = sanitizer.sanitize(text);
+  function validateMessage(o){
+    var errors = [];
     
     // Check length
-    if( text.length < 2 ){
-      _errors.push("Minimum 2 znaki");
-      return false;
+    if( o.txt.length < config.message.txt.min_length ){
+      errors.push("MESSAGE_TEXT_TOO_SHORT");
     }
 
-    // Put a timer on user
+    return errors;
+  }
 
+
+  var addMessage = function(o){
+    var errors = [];
+
+    // sanitize without warning..
+    o.txt = sanitizer.sanitize(o.txt);
+
+    var errors = validateMessage(o);
+
+    if(errors.length > 0){
+      return { status: 'fail', data: errors };
+    }else{
+      // TODO: Put a timer on user
+      var newMsg = new Message(o.user, o.txt);
+      _list.push = newMsg;
+
+      return {status: 'ok', data: newMsg };
+    }
 
     
-    var newMsg = new Message(user, text);
-    _list.push = newMsg;
-
-    return newMsg;
   }
 
   return {
-    list: list,
-    errors: errors,
+    list: _list,
     addMessage: addMessage
   };
 }());

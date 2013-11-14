@@ -1,0 +1,8 @@
+{
+  "name": "chat",
+  "version": "0.0.1",
+  "main": "cdd/app.css",
+  "dependencies": {
+    "angular": "latest"
+  }
+}

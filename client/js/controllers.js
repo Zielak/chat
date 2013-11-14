@@ -5,6 +5,7 @@
 function ChatCtrl($scope, socket) {
 
   $scope.loginScreen = true;
+  $scope.loginPassword = '';
   $scope.user = {};
   $scope.users = [];
   $scope.messages = [];
@@ -72,10 +73,18 @@ function ChatCtrl($scope, socket) {
   // Methods published to the scope
   // ==============================
 
+  $scope.loginRegisteredChange = function(){
+    $scope.loginPassword = '';
+    // TODO: add HTML5 required tag if password is visible
+    // $scope.loginPassword.required = true;
+  }
+
   $scope.logIn = function () {
-    socket.emit('user:login', {name: $scope.name}, function (result) {
+    var pass = false;
+    if($scope.loginRegistered) pass = $scope.loginPassword;
+    socket.emit('user:login', {name: $scope.name, pass: pass}, function (result) {
       if (result.status !== 'ok') {
-        alert(result);
+        alert(result.data.toString().replace(/\,/g,"\n"));
       } else {
         /*$scope.messages.push({
           user: 'chatroom',

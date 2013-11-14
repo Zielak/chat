@@ -29,22 +29,12 @@ var users = (function () {
 //module.exports = function(){
   var _online = [];
   var _registered = [];
-  var _errors = [];
   var _updating = false;
-
-  /*var list = function() {
-    return _list;
-  };*/
-  /*
-  var errors = function(){
-    return _errors;
-  }*/
+  
 
 
-
-
-  var addUser = function(o){
-    _errors = [];
+  function validateNewUsername(o){
+    var errors = [];
     // TODO: check if user ID already is logged in
     
     // sanitize without warning..
@@ -54,33 +44,56 @@ var users = (function () {
     }*/
     o.name = sanitizer.sanitize(o.name);
     
+    // Undefined?
+    if( o.name == undefined ){
+      o.name = '';
+    }
+
     // Check length
-    if( o.name.length < 3 ){
-      _errors.push("Minimum 3 znaki");
+    if( o.name.length < config.user.name.min_length ){
+      errors.push("USER_NAME_TOO_SHORT");
     }
     
     // Check if user exists
     for(var i=0,j=_online.length; i<j; i++){
       if( o.name == _online[i].name ){
-        _errors.push("Użytkownik z takim nickiem jest już zalogowany.");
+        errors.push("USER_NAME_ALREADY_ONLINE");
       }
     };
     for(var i=0,j=_registered.length; i<j; i++){
       if( o.name == _registered[i].name ){
-        _errors.push("Ten nick jest zarejestrowany. Podaj hasło jeżeli jesteś jego posiadaczem.");
+        errors.push("USER_NAME_REGISTERED");
       }
     };
+
+    return errors;
+  }
+
+
+
+  var addUser = function(o){
+    var errors = validateNewUsername(o);
     
-    if(_errors.length > 0){
-      return { status: 'fail', data: _errors };
+    if(errors.length > 0){
+      return { status: 'fail', data: errors };
     }else{
       var newGuy = new User(o.id, o.name, o.group, o.pass);
-      //_list[o.id] = newGuy;
       _online.push(newGuy);
 
-      /*console.log( 'USERS: added new user', moment().format('YYYYMMDDHHmmssSS') );
-      console.log( _list );*/
+      return {status: 'ok', data: newGuy };
+    }
+  }
 
+  var registerUser = function(o){
+    var errors = validateNewUsername(o);
+    
+    if(errors.length > 0){
+      return { status: 'fail', data: errors };
+    }else{
+      var newGuy = new User(o.id, o.name, o.group, o.pass);
+      _registered.push(newGuy);
+      // TODO: push this guy to database or something
+      
       return {status: 'ok', data: newGuy };
     }
   }
@@ -110,6 +123,8 @@ var users = (function () {
     var where = (typeof o.where !== 'undefined') ? o.where : 'everywhere';
     var byWhat = 'name';
     
+    console.log('where',where)
+
     if(typeof o.name !== 'undefined'){
       byWhat = 'name';
     }else if(typeof o.id !== 'undefined'){
@@ -129,7 +144,10 @@ var users = (function () {
           found = { foundBy: 'id', foundIn: 'registered', user: _registered[i] };
         }
       }
-
+    console.log("USER.FIND: looging for:", o)
+    console.log("USER.FIND: found:", found);
+    console.log("USER.REGISTERED:",_registered);
+    console.log("USER.ONLINE:",_online);
     return found;
   }
 
@@ -137,9 +155,9 @@ var users = (function () {
     list: _online,
     online: _online,
     registered: _registered,
-    errors: _errors,
 
     addUser: addUser,
+    registerUser: registerUser,
     kickUser: kickUser,
     changeName: changeName,
     find: find

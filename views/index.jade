@@ -6,8 +6,16 @@ block body
       .login-form
         h3 Podaj swój nick
         form(ng-submit='logIn()')
-          input#loginField(placeholder='Jak chcesz się nazywać?',ng-model='name')
-          input(type='submit', value='Wejdź')
+          .row
+            input.col.span_12#loginField(placeholder='Jak chcesz się nazywać?',ng-model='name',name='loginName')
+          .row
+            input.col.span_1#loginRegistered(type='checkbox',ng-model='loginRegistered',ng-change='loginRegisteredChange()')
+            label.col.span_10(for='loginRegistered') Jestem zarejestrowany
+          .row(ng-show='loginRegistered')
+            input.col.span_12#loginPasswordField(type='password',placeholder='Wprowadź hasło',ng-model='loginPassword')
+          .row
+            input.col.span_6(type='submit', value='Wejdź')
+            input.col.span_6(type='button', value='Zarejestruj się')
     .row
       form(ng-submit='sendMessage()')
         .col.span_8 
@@ -22,7 +30,7 @@ block body
             time {{msg.timeStamp}}
             p
               span.username(ng-if="msg.type != 'server' ") {{msg.user.name}}: 
-              | {{msg.text}}
+              | {{msg.txt}}
       .col.span_3
         .overflowable.users
           div.user(ng-repeat='u in users')

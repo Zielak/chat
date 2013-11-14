@@ -34,13 +34,27 @@ module.exports = function (socket) {
   socket.on('user:login', function(data, fn) {
     //console.log(data.name, ' is trying to log in.');
     
-    var user = users.addUser({name: data.name, id: socket.id});
+    var user = {};
+    var welcome = false;
+
+    // I'm getting password, try to login registered username first
+    if(data.pass !== false){
+      user = users.find( {name:data.name, where:'registered'} );
+      if(user!==false){
+        welcome = true;
+      }else{
+
+      }
+    }else{
+      user = users.addUser({name: data.name, id: socket.id});
+      if( user.status === 'ok' ){
+        welcome = true;
+        user = user.data;
+      }
+    }
     
-    if( user.status === 'ok' ){
-      //socket.set('loggedIn', true);
 
-      user = user.data;
-
+    if(welcome){
       // notify other clients that a new user has joined
       socket.broadcast.emit('user:join', {
         user: user
@@ -58,14 +72,14 @@ module.exports = function (socket) {
       // TODO: Flood protection
       // TODO: Moderation
       socket.on('send:message', function (data, fn) {
-        var message = messages.addMessage(user, data.message);
+        var message = messages.addMessage({user: user, txt: data.message});
 
-        if(message){
-          var send = {status:'ok', data:{message: message}};
+        if(message.status === 'ok'){
+          var send = {status:'ok', data:{message: message.data}};
           socket.broadcast.emit('send:message', send);
           fn(send);
         }else{
-          fn({status:'fail', data:messages.errors()});
+          fn({status:'fail', data:message.data});
         }
       });
       // validate a user's name change, and broadcast it on success
@@ -96,7 +110,7 @@ module.exports = function (socket) {
         }
       });
     }else{
-      fn({status:'fail', data:users._errors});
+      fn({status:'fail', data:user.data});
     }
     
     socket.on('disconnect', function() {

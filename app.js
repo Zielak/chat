@@ -75,7 +75,7 @@ io.sockets.on('connection', socket );
  * ===========================================*/
 for (var i = config.credentials.length - 1; i >= 0; i--) {
   var u = config.credentials[i];
-  users.addUser({
+  users.registerUser({
     id: false,
     name: u.name,
     group: u.group,
