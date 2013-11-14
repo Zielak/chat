@@ -8,10 +8,11 @@ var config = require('../config');
 //console.log( 'USERS: initing', moment().format('YYYYMMDDHHmmssSS') );
 
 
-function User(id, name, group){
+function User(id, name, group, pass){
   this.id = id;
   this.name = name;
   this.group = group || 'guests';
+  this.pass = pass || false;
 
   // This is anti-flood timer
   this.timer = 0;
@@ -26,7 +27,8 @@ User.prototype = {
 
 var users = (function () {
 //module.exports = function(){
-  var _list = [];
+  var _online = [];
+  var _registered = [];
   var _errors = [];
   var _updating = false;
 
@@ -37,6 +39,10 @@ var users = (function () {
   var errors = function(){
     return _errors;
   }*/
+
+
+
+
   var addUser = function(o){
     _errors = [];
     // TODO: check if user ID already is logged in
@@ -54,18 +60,23 @@ var users = (function () {
     }
     
     // Check if user exists
-    for(var i=0,j=_list.length; i<j; i++){
-      if( o.name == _list[i].name ){
-        _errors.push("Użytkownik z takim nickiem już istnieje.");
+    for(var i=0,j=_online.length; i<j; i++){
+      if( o.name == _online[i].name ){
+        _errors.push("Użytkownik z takim nickiem jest już zalogowany.");
+      }
+    };
+    for(var i=0,j=_registered.length; i<j; i++){
+      if( o.name == _registered[i].name ){
+        _errors.push("Ten nick jest zarejestrowany. Podaj hasło jeżeli jesteś jego posiadaczem.");
       }
     };
     
     if(_errors.length > 0){
       return { status: 'fail', data: _errors };
     }else{
-      var newGuy = new User(o.id, o.name);
+      var newGuy = new User(o.id, o.name, o.group, o.pass);
       //_list[o.id] = newGuy;
-      _list.push(newGuy);
+      _online.push(newGuy);
 
       /*console.log( 'USERS: added new user', moment().format('YYYYMMDDHHmmssSS') );
       console.log( _list );*/
@@ -73,18 +84,21 @@ var users = (function () {
       return {status: 'ok', data: newGuy };
     }
   }
-  var removeUser = function(id){
-    for(var i = _list.length - 1; i >= 0; i--) {
-      if(_list[i].id === id) {
-        _list.splice(i, 1);
+
+  // TODO: rename to kickUser!
+  var kickUser = function(id){
+    for(var i = _online.length - 1; i >= 0; i--) {
+      if(_online[i].id === id) {
+        _online.splice(i, 1);
         //delete _list[i];
       }
     }
   };
+
   var changeName = function(id, name){
     // Check if name is taken
     if( !find({name: name}) ){
-      _list[id].name = name;
+      _online[id].name = name;
       return true;
     }else{
       return false;
@@ -93,28 +107,40 @@ var users = (function () {
 
   var find = function(o){
     var found = false;
-    if(typeof o.id !== 'undefined'){
-      for(var i = _list.length - 1; i >= 0; i--) {
-        if(_list[i].id === o.id) {
-          found = { foundBy: 'id', user: _list[i] };
-        }
-      }
-    }
+    var where = (typeof o.where !== 'undefined') ? o.where : 'everywhere';
+    var byWhat = 'name';
+    
     if(typeof o.name !== 'undefined'){
-      for(var i = _list.length - 1; i >= 0; i--) {
-        if(_list[i].name === o.name) {
-          found = { foundBy: 'name', user: _list[i] };
+      byWhat = 'name';
+    }else if(typeof o.id !== 'undefined'){
+      byWhat = 'id'
+    }
+
+    if(where === 'everywhere' || where === 'online')
+      for(var i = _online.length - 1; i >= 0; i--) {
+        if(_online[i].id === o.id) {
+          found = { foundBy: 'id', foundIn: 'online', user: _online[i] };
         }
       }
-    }
+
+    if(where === 'everywhere' || where === 'registered')
+      for(var i = _registered.length - 1; i >= 0; i--) {
+        if(_registered[i].id === o.id) {
+          found = { foundBy: 'id', foundIn: 'registered', user: _registered[i] };
+        }
+      }
+
     return found;
   }
 
   return {
-    list: _list,
+    list: _online,
+    online: _online,
+    registered: _registered,
     errors: _errors,
+
     addUser: addUser,
-    removeUser: removeUser,
+    kickUser: kickUser,
     changeName: changeName,
     find: find
   };

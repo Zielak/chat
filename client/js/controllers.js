@@ -29,7 +29,7 @@ function ChatCtrl($scope, socket) {
 
   socket.on('user:join', function (result) {
     $scope.messages.push({
-      user: 'chatroom',
+      type: 'server',
       text: 'User ' + result.user.name + ' has joined.'
     });
     $scope.users.push(result.user);
@@ -38,7 +38,7 @@ function ChatCtrl($scope, socket) {
   // add a message to the conversation when a user disconnects or leaves the room
   socket.on('user:left', function (data) {
     $scope.messages.push({
-      user: 'chatroom',
+      type: 'server',
       text: 'User ' + data.name + ' has left.'
     });
     var i, u;
@@ -64,7 +64,7 @@ function ChatCtrl($scope, socket) {
     }
 
     $scope.messages.push({
-      user: 'chatroom',
+      type: 'server',
       text: 'User ' + oldName + ' is now known as ' + newName + '.'
     });
   }

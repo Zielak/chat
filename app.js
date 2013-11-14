@@ -11,7 +11,7 @@ var routes = require('./routes');
 
 var socket = require('./controllers/socket.js');
 var users = require('./controllers/User.js');
-users.addUser({ id: 'server', name: 'Server', group:'admin'} );
+//users.addUser({ id: 'server', name: 'Server', group:'admin'} );
 
 var messages = require('./controllers/Message.js');
 
@@ -47,9 +47,9 @@ app.configure('production', function(){
 });
 */
 
-/**
- * Routes
- */
+/* =============================================
+ *                   Routes
+ * ===========================================*/
 
 // serve index and view partials
 app.get('/', routes.index);
@@ -64,23 +64,21 @@ app.get('*', routes.index);
 // Socket.io Communication
 io.sockets.on('connection', socket );
 
-/**
- * Start Server
- */
 
 
-/*app.get("/users", function(req, res){
-  /*
-  for(var i=0; i < clients.length; i++){
-    users.push({
-      id: clients[i].id,
-      storeData: clients[i].store.data
-      //name: clients[i].get('name')
-    });
-  }/
-  
-  res.header('Content-Type', 'application/json');
-  res.header('Charset', 'utf-8');
-  res.json(users.list());
-})*/
 
+
+
+
+/* =============================================
+ *                 Config Init
+ * ===========================================*/
+for (var i = config.credentials.length - 1; i >= 0; i--) {
+  var u = config.credentials[i];
+  users.addUser({
+    id: false,
+    name: u.name,
+    group: u.group,
+    pass: u.pass
+  })
+};

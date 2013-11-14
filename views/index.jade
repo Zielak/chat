@@ -21,7 +21,7 @@ block body
           div.message(ng-repeat='msg in messages | reverse')
             time {{msg.timeStamp}}
             p
-              span.username {{msg.user.name}}: 
+              span.username(ng-if="msg.type != 'server' ") {{msg.user.name}}: 
               | {{msg.text}}
       .col.span_3
         .overflowable.users

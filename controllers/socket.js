@@ -96,14 +96,14 @@ module.exports = function (socket) {
         }
       });
     }else{
-      fn({status:'fail', data:users.errors});
+      fn({status:'fail', data:users._errors});
     }
     
     socket.on('disconnect', function() {
       socket.broadcast.emit('user:left', {
         name: user.name
       });
-      users.removeUser(user.id);
+      users.kickUser(user.id);
     });
   });
 
