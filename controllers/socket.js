@@ -29,8 +29,9 @@ io.set('authorization', function (handshakeData, cb) {
  * ========================================================*/
 
 module.exports = function (socket) {
-  //socket.set('loggedIn', false);
-  //socket.emit('connect', {status:'ok', info: "Połączono z serwerem"});
+
+  socket.emit('config:load', config);
+
   socket.on('user:login', function(data, fn) {
     //console.log(data.name, ' is trying to log in.');
     
@@ -39,11 +40,10 @@ module.exports = function (socket) {
 
     // I'm getting password, try to login registered username first
     if(data.pass !== false){
-      user = users.find( {name:data.name, where:'registered'} );
-      if(user!==false){
+      user = users.loginUser({name: data.name, id: socket.id, pass: data.pass});
+      if(user.status === 'ok'){
         welcome = true;
-      }else{
-
+        user = user.data;
       }
     }else{
       user = users.addUser({name: data.name, id: socket.id});
@@ -59,6 +59,7 @@ module.exports = function (socket) {
       socket.broadcast.emit('user:join', {
         user: user
       });
+      socket.broadcast.emit('send:message', messages.serverMessage('User '+user.name+' has joined.'))
 
       // Welcome him and start listening
       /*reply.info = 'Zostales zalogowany '+user.name+', witaj!';
@@ -72,7 +73,7 @@ module.exports = function (socket) {
       // TODO: Flood protection
       // TODO: Moderation
       socket.on('send:message', function (data, fn) {
-        var message = messages.addMessage({user: user, txt: data.message});
+        var message = messages.addMessage({type: 'user', user: user, txt: data.message});
 
         if(message.status === 'ok'){
           var send = {status:'ok', data:{message: message.data}};
@@ -102,7 +103,7 @@ module.exports = function (socket) {
       
       
       //socket.broadcast.emit('user '+socket.get('name')+' connected');
-      console.log('USERS: list', users.list);
+      
       //var usersList = users.list;
       fn({status:'ok', data:{
           user: user,
@@ -114,9 +115,8 @@ module.exports = function (socket) {
     }
     
     socket.on('disconnect', function() {
-      socket.broadcast.emit('user:left', {
-        name: user.name
-      });
+      socket.broadcast.emit('user:left', { name: user.name });
+      socket.broadcast.emit('send:message', messages.serverMessage('User '+user.name+' has left.'))
       users.kickUser(user.id);
     });
   });

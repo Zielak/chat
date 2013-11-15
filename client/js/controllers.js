@@ -1,14 +1,19 @@
 'use strict';
 
+
 /* Controllers */
 
-function ChatCtrl($scope, socket) {
+function ChatCtrl($scope, socket, toaster) {
 
   $scope.loginScreen = true;
   $scope.loginPassword = '';
   $scope.user = {};
+  $scope.name = '';
   $scope.users = [];
+  $scope.message = '';
   $scope.messages = [];
+
+  $scope.config = {};
 
   // Socket listeners
   // ================
@@ -19,6 +24,9 @@ function ChatCtrl($scope, socket) {
 
     $scope.loginScreen = false;
   });*/
+  socket.on('config:load', function (result) {
+    $scope.config = result.data;
+  });
 
   socket.on('send:message', function (result) {
     $scope.messages.push(result.data.message);
@@ -29,19 +37,19 @@ function ChatCtrl($scope, socket) {
   });
 
   socket.on('user:join', function (result) {
-    $scope.messages.push({
+    /*$scope.messages.push({
       type: 'server',
       text: 'User ' + result.user.name + ' has joined.'
-    });
+    });*/
     $scope.users.push(result.user);
   });
 
   // add a message to the conversation when a user disconnects or leaves the room
   socket.on('user:left', function (data) {
-    $scope.messages.push({
+    /*$scope.messages.push({
       type: 'server',
       text: 'User ' + data.name + ' has left.'
-    });
+    });*/
     var i, u;
     for (i = 0; i < $scope.users.length; i++) {
       u = $scope.users[i];
@@ -84,7 +92,7 @@ function ChatCtrl($scope, socket) {
     if($scope.loginRegistered) pass = $scope.loginPassword;
     socket.emit('user:login', {name: $scope.name, pass: pass}, function (result) {
       if (result.status !== 'ok') {
-        alert(result.data.toString().replace(/\,/g,"\n"));
+        toaster.pop('error', 'Błąd podczas logowania', result.data.toString().replace(/\,/g,"\n"));
       } else {
         /*$scope.messages.push({
           user: 'chatroom',
@@ -116,7 +124,7 @@ function ChatCtrl($scope, socket) {
   $scope.sendMessage = function () {
     socket.emit('send:message', {message: $scope.message}, function(result){
       if(result.status !== 'ok'){
-        console.log('whoops');
+        $scope.pop('error', 'Błąd podczas wysyłania wiadomości', result.data.toString().replace(/\,/g,"\n"))
       }else{
         // add our message to our model locally
         $scope.messages.push(result.data.message);
@@ -125,6 +133,11 @@ function ChatCtrl($scope, socket) {
 
     // clear message box
     $scope.message = '';
+  };
+
+
+  $scope.pop = function(type, title, text){
+    toaster.pop(type, title, text);
   };
 
 }

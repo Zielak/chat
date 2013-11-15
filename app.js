@@ -6,13 +6,12 @@ var port = 1991;
 
 // var nano = require('nano')('http://localhost:5984');
 var config = require('./config');
+var credentials = require('./credentials');
 
 var routes = require('./routes');
 
 var socket = require('./controllers/socket.js');
 var users = require('./controllers/User.js');
-//users.addUser({ id: 'server', name: 'Server', group:'admin'} );
-
 var messages = require('./controllers/Message.js');
 
 
@@ -71,10 +70,10 @@ io.sockets.on('connection', socket );
 
 
 /* =============================================
- *                 Config Init
+ *              Credentials Init
  * ===========================================*/
-for (var i = config.credentials.length - 1; i >= 0; i--) {
-  var u = config.credentials[i];
+for (var i = credentials.length - 1; i >= 0; i--) {
+  var u = credentials[i];
   users.registerUser({
     id: false,
     name: u.name,

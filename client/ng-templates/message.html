@@ -1,0 +1,5 @@
+<p class="message">
+  <span user="item.user"></span>
+  <time>({{ item.timeStamp.substr(8, 6) }})</time>
+  <span ng-class="(item.user.group=='server') ? 'server' : ''">{{item.txt}}</span>
+</p>

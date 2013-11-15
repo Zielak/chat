@@ -14,6 +14,11 @@ function User(id, name, group, pass){
   this.group = group || 'guests';
   this.pass = pass || false;
 
+  // ### Accitional properties
+
+  // Is user hidden from users list?
+  this.hidden = false;
+
   // This is anti-flood timer
   this.timer = 0;
 
@@ -45,9 +50,9 @@ var users = (function () {
     o.name = sanitizer.sanitize(o.name);
     
     // Undefined?
-    if( o.name == undefined ){
+    /*if( o.name === 'undefined' ){
       o.name = '';
-    }
+    }*/
 
     // Check length
     if( o.name.length < config.user.name.min_length ){
@@ -58,11 +63,23 @@ var users = (function () {
     for(var i=0,j=_online.length; i<j; i++){
       if( o.name == _online[i].name ){
         errors.push("USER_NAME_ALREADY_ONLINE");
+        break;
       }
     };
     for(var i=0,j=_registered.length; i<j; i++){
       if( o.name == _registered[i].name ){
         errors.push("USER_NAME_REGISTERED");
+        break;
+      }
+    };
+
+    // Don't allow restricted usernames
+    // TODO: string search, even the part of username can't 
+    //       contain restricted words.
+    for (var i = config.restricted.userNames.length - 1; i >= 0; i--) {
+      if( o.name === config.restricted.userNames[i]){
+        errors.push("USER_NAME_RESTRICTED");
+        break;
       }
     };
 
@@ -98,6 +115,38 @@ var users = (function () {
     }
   }
 
+  var loginUser = function(o){
+    var errors = [];
+
+    // Prevent user from loging in twice
+    for(var i=0,j=_online.length; i<j; i++){
+      if( o.name == _online[i].name ){
+        errors.push("USER_NAME_ALREADY_ONLINE");
+      }
+    };
+
+    // find if user exists in registered list
+    var found = find( {name:o.name , where:'registered'} );
+    var user = found.user;
+
+    if(found !== false){
+      if(user.pass !== o.pass){
+        errors.push("USER_PASS_INCORRECT");
+      }
+    }else{
+      errors.push("USER_NAME_NOT_REGISTERED");
+    }
+
+    if(errors.length > 0){
+      return { status: 'fail', data: errors };
+    }else{
+      var newGuy = new User(o.id, user.name, user.group);
+      _online.push(newGuy);
+      
+      return {status: 'ok', data: newGuy };
+    }
+  }
+
   // TODO: rename to kickUser!
   var kickUser = function(id){
     for(var i = _online.length - 1; i >= 0; i--) {
@@ -122,32 +171,34 @@ var users = (function () {
     var found = false;
     var where = (typeof o.where !== 'undefined') ? o.where : 'everywhere';
     var byWhat = 'name';
-    
-    console.log('where',where)
-
     if(typeof o.name !== 'undefined'){
       byWhat = 'name';
     }else if(typeof o.id !== 'undefined'){
       byWhat = 'id'
     }
 
+    console.log('where',where)
+    console.log('byWhat',byWhat)
+
     if(where === 'everywhere' || where === 'online')
       for(var i = _online.length - 1; i >= 0; i--) {
-        if(_online[i].id === o.id) {
-          found = { foundBy: 'id', foundIn: 'online', user: _online[i] };
+        if(_online[i][byWhat] === o[byWhat]) {
+          found = { foundBy: byWhat, foundIn: 'online', user: _online[i] };
         }
       }
 
     if(where === 'everywhere' || where === 'registered')
       for(var i = _registered.length - 1; i >= 0; i--) {
-        if(_registered[i].id === o.id) {
-          found = { foundBy: 'id', foundIn: 'registered', user: _registered[i] };
+        if(_registered[i][byWhat] === o[byWhat]) {
+          found = { foundBy: byWhat, foundIn: 'registered', user: _registered[i] };
         }
       }
+
     console.log("USER.FIND: looging for:", o)
     console.log("USER.FIND: found:", found);
     console.log("USER.REGISTERED:",_registered);
     console.log("USER.ONLINE:",_online);
+
     return found;
   }
 
@@ -158,6 +209,7 @@ var users = (function () {
 
     addUser: addUser,
     registerUser: registerUser,
+    loginUser: loginUser,
     kickUser: kickUser,
     changeName: changeName,
     find: find

@@ -22,27 +22,29 @@ config.user = {
   }
 }
 
+config.restricted = {
+  userNames: [
+    'server'
+  ]
+}
+
 config.message = {
   txt: {
-    min_length: 2
+    min_length: 2,
+    max_length: 100
   }
 }
 
+// chatColor is also defined in CSS files
 config.groups = {
   "guest": {},
   "mod": {
-    chatColor: "#006600"
+    chatColor: "#009900"
   },
   "admin": {
-    chatColor: "#660000"
+    chatColor: "#990000"
   }
 }
-config.credentials = [
-  {
-    name:  "Zielak",
-    pass:  "admin",
-    group: "admin"
-  }
-]
+
 
 module.exports = config;

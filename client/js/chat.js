@@ -3,6 +3,7 @@
 var app = angular.module('chatApp', [
   'chatApp.filters',
   'chatApp.directives',
+  'toaster'
 ]);
 
 window.onload = function () {
