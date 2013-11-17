@@ -16,6 +16,10 @@ config.antiFlood = {
   border: 5000
 }
 
+config.moderation = {
+  active: true
+}
+
 config.user = {
   name: {
     min_length: 2

@@ -26,6 +26,8 @@ var serverUser = {
 var messages = (function () {
 //module.exports = function(){
   var _list = [];
+  // Moderation Queue
+  var _queue = [];
   
   function validateMessage(o){
     var errors = [];
@@ -56,6 +58,7 @@ var messages = (function () {
 
   var addMessage = function(o){
     var errors = [];
+    var info = '';
 
     // sanitize text without warning..
     o.txt = sanitizer.sanitize(o.txt);
@@ -71,9 +74,15 @@ var messages = (function () {
       }else if(o.type === 'event'){
         var newMsg = new Message(o.type, o.txt, serverUser);
       }
-      _list.push = newMsg;
 
-      return {status: 'ok', data: newMsg };
+      if(config.moderation.active){
+        _queue.push = newMsg;
+        info = 'MESSAGE_ADDED_TO_MOD_QUEUE';
+      }else{
+        _list.push = newMsg;
+      }
+
+      return {status: 'ok', info: info, data: newMsg };
     }
   }
 

@@ -6,6 +6,44 @@ var app = angular.module('chatApp', [
   'toaster'
 ]);
 
+app.animation('.message-animate', function() {
+  return {
+    enter : function(element, done) {
+      jQuery(element).css({
+        position:'relative',
+        top:'-1rem',
+        opacity:0
+      });
+      jQuery(element).animate({
+        top:0,
+        opacity:1
+      }, done);
+    },
+
+    leave : function(element, done) {
+      jQuery(element).css({
+        position:'relative',
+        left:0,
+        opacity:1
+      });
+      jQuery(element).animate({
+        left:-30,
+        opacity:0
+      }, done);
+    },
+
+    move : function(element, done) {
+      jQuery(element).css({
+        opacity:0.5
+      });
+      jQuery(element).animate({
+        opacity:1
+      }, done);
+    }
+  };
+});
+
+
 window.onload = function () {
   // focus on the input field for easy access...
   var input = document.getElementById ('loginField');

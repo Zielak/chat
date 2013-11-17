@@ -33,8 +33,6 @@ module.exports = function (socket) {
   socket.emit('config:load', config);
 
   socket.on('user:login', function(data, fn) {
-    //console.log(data.name, ' is trying to log in.');
-    
     var user = {};
     var welcome = false;
 

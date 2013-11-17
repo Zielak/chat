@@ -1,49 +1,48 @@
 extends layout
 
 block body
-  div.container(ng-controller='ChatCtrl')
+  div.container(ng-controller="ChatCtrl")
     toaster-container(toaster-options="{'position-class': 'toast-top-right'}")
-    .login(ng-show='loginScreen')
+    .login(ng-show="loginScreen")
       .login-form
         h3 Podaj swój nick
-        form(ng-submit='logIn()')
+        form(ng-submit="logIn()")
           .row
             .col.span_2
-              label(for='loginField') Login:
+              label(for="loginField") Login:
             .col.span_10
-              input#loginField(placeholder='Jak chcesz się nazywać?',ng-model='name',name='loginName')
+              input#loginField(placeholder="Jak chcesz się nazywać?",ng-model="name",name="loginName")
           .row
             .col.span_2
-              input#loginRegistered(type='checkbox',ng-model='loginRegistered',ng-change='loginRegisteredChange()')
+              input#loginRegistered(type="checkbox",ng-model="loginRegistered",ng-change="loginRegisteredChange()")
             .col.span_10
-              label.left(for='loginRegistered') Jestem zarejestrowany
-          .row(ng-show='loginRegistered')
+              label.left(for="loginRegistered") Jestem zarejestrowany
+          .row(ng-show="loginRegistered")
             .col.span_2
-              label(for='loginPasswordField') Hasło:
+              label(for="loginPasswordField") Hasło:
             .col.span_10
-              input#loginPasswordField(type='password',placeholder='Wprowadź hasło',ng-model='loginPassword')
+              input#loginPasswordField(type="password",placeholder="Wprowadź hasło",ng-model="loginPassword")
           .row
             .col.span_6
-              input(type='submit', value='Wejdź')
+              input(type="submit", value="Wejdź")
             .col.span_6
-              input(type='button', value='Zarejestruj się')
+              input(type="button", value="Zarejestruj się")
     .row
-      form(ng-submit='sendMessage()')
+      form(ng-submit="sendMessage()")
         .col.span_8.message
           span(user="user")
           | &nbsp;
-          input.message-input(type='text',ng-model='message',placeholder='Wpisz wiadomość')
+          input.message-input(type="text",ng-model="message",placeholder="Wpisz wiadomość")
         .col.span_1
-          input(class='message-send',type='submit', value='Send')
+          input(class="message-send",type="submit", value="Send")
         .col.span_3
     .row
       .col.span_9
         .overflowable.messages
-          div(ng-repeat='msg in messages | reverse')
-            div(message='msg')
+          div(ng-repeat="msg in messages | reverse",class="message-animate",message="msg")
       .col.span_3
         .overflowable.users
-          div.user(ng-repeat='u in users')
+          div.user(ng-repeat="u in users")
             p
               a {{u.name}}
     //-
@@ -51,16 +50,17 @@ block body
         .col.span_12
           h3 Change your name
           p Your current user name is {{name}}
-          form(ng-submit='changeName()')
-            input(ng-model='newName')
-            input(type='submit', value='Change Name')
-  script(src='/socket.io/socket.io.js')
-  script(src='/bower_components/angular/angular.js')
-  script(src='/bower_components/angular-animate/angular-animate.js')
-  script(src='/bower_components/angular-socket-io/socket.js')
-  script(src='/bower_components/AngularJS-Toaster/toaster.js')
-  script(src='/js/chat.js')
-  script(src='/js/services.js')
-  script(src='/js/controllers.js')
-  script(src='/js/filters.js')
-  script(src='/js/directives.js')
+          form(ng-submit="changeName()")
+            input(ng-model="newName")
+            input(type="submit", value="Change Name")
+  script(src="http://code.jquery.com/jquery-2.0.3.min.js")
+  script(src="/socket.io/socket.io.js")
+  script(src="/bower_components/angular/angular.js")
+  script(src="/bower_components/angular-animate/angular-animate.js")
+  script(src="/bower_components/angular-socket-io/socket.js")
+  script(src="/bower_components/AngularJS-Toaster/toaster.js")
+  script(src="/js/chat.js")
+  script(src="/js/services.js")
+  script(src="/js/controllers.js")
+  script(src="/js/filters.js")
+  script(src="/js/directives.js")
