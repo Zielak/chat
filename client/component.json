@@ -1,0 +1,9 @@
+{
+  "name":  "Chat",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "latest",
+    "angular-animate": "latest",
+    "AngularJS-Toaster": "git://github.com/jirikavi/AngularJS-Toaster.git"
+  }
+}
