@@ -1,5 +1,3 @@
-'use strict';
-
 /* Services */
 
 app.factory('socket', function ($rootScope) {

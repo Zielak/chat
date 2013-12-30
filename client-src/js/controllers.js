@@ -1,6 +1,3 @@
-'use strict';
-
-
 /* Controllers */
 
 function ChatCtrl($scope, socket, toaster) {
