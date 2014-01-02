@@ -40,10 +40,17 @@
             filter: 'isFile'
           },
 
+          {src: 'bower_components/angular/angular.js', dest: 'client/js/angular.js' },
           {src: 'bower_components/angular/angular.min.js', dest: 'client/js/angular.min.js' },
+          {src: 'bower_components/angular/angular.min.js.map', dest: 'client/js/angular.min.js.map' },
+          {src: 'bower_components/angular-animate/angular-animate.js', dest: 'client/js/angular-animate.js' },
           {src: 'bower_components/angular-animate/angular-animate.min.js', dest: 'client/js/angular-animate.min.js' },
+          {src: 'bower_components/angular-animate/angular-animate.min.js.map', dest: 'client/js/angular-animate.min.js.map' },
+
           {src: 'bower_components/angular-socket-io/socket.js', dest: 'client/js/socket.js' },
           {src: 'bower_components/AngularJS-Toaster/toaster.js', dest: 'client/js/toaster.js' },
+          
+          {src: 'node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js', dest: 'client/js/socket.io.js'},
 
           /* not using bootstrap
           {expand: true, src: ['bower_components/bootstrap/dist/js/**.js'], dest: 'js/', flatten: true, filter: 'isFile'},
