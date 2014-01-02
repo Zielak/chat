@@ -1,18 +1,18 @@
 {
-    "name": "Chat",
-    "version": "0.0.2",
-    "description": "Real time web chat",
-    "dependencies": {
-        "socket.io": "latest",
-        "nano": "latest",
-        "express": "latest",
-        "jade": "latest",
-        "sanitizer" : "latest",
-        "moment" : "latest",
-        "grunt": "~0.4.1",
-        "grunt-contrib-nodeunit": "~0.2.0",
-        "grunt-contrib-copy": "~0.4.1",
-        "grunt-contrib-concat": "latest"
-    },
-    "author": "Zielak"
+  "name": "Chat",
+  "version": "0.0.2",
+  "description": "Real time web chat",
+  "dependencies": {
+    "socket.io": "latest",
+    "nano": "latest",
+    "express": "latest",
+    "jade": "latest",
+    "sanitizer" : "latest",
+    "moment" : "latest",
+    "grunt": "~0.4.1",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-concat": "latest"
+  },
+  "author": "Zielak"
 }
