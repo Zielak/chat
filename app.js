@@ -53,12 +53,21 @@ app.configure('production', function(){
 // serve index and view partials
 app.get('/', routes.index);
 app.get('/partials/:name', routes.partials);
+// fix from http://stackoverflow.com/questions/15054987/express-and-angularjs-web-page-freezes-when-attempting-to-open-home-page
+/*app.get('partials/:name', function(request, response) {
+  var name = request.params.name;
+  response.render('partials/' + name);
+});*/
 
 // JSON API
 //app.get('/api/name', api.name);
 
-// redirect all others to the index (HTML5 history)
+
+/*  THIS THING BROKE CLIENT,
+    browser freezes when trying to get 404 document
+    infinite loop of redirection.
 app.get('*', routes.index);
+*/
 
 // Socket.io Communication
 io.sockets.on('connection', socket );
