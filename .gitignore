@@ -1,6 +1,6 @@
 node_modules
 bower_components
-
+npm-debug.log
 
 # OS generated files #
 ######################
@@ -15,3 +15,4 @@ Thumbs.db
 # SublimeText #
 ###############
 package.sublime-workspace
+/.project
