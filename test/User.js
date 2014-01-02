@@ -1,10 +1,10 @@
 var
   should = require('should'),
   //app = require('../app.js'),
-  sanitizer = require('sanitizer'),
-  moment = require('moment'),
+  app = require('../app.js'),
   users = require('../controllers/User.js'),
-  config = require('../config')
+  config = require('../config'),
+  credentials = require('../credentials')
 ;
 
 describe('User', function(){
@@ -13,52 +13,76 @@ describe('User', function(){
     // clear users or something
   })*/
 
-  var pierwszy, drugi;
+  var u, find, first, drugi;
 
   it('module should be created', function(){
     users.should.be.ok;
   })
+
+  it('should reject empty call',function(){
+    u = users.addUser();
+    u.status.should.equal('fail');
+    u.data.should.include('USER_EMPTY_CALL');
+  })
+
+  it('should reject empty or short username',function(){
+    u = users.addUser({name:''});
+    u.status.should.equal('fail');
+    u.data.should.include('USER_NAME_TOO_SHORT');
+  })
+
+  it('should reject restricted usernames', function(){
+    var restricted = config.restricted.userNames;
+    for (var i = restricted.length - 1; i >= 0; i--) {
+      u = users.addUser({name: restricted[i]});
+      u.status.should.equal('fail');
+      u.data.should.include('USER_NAME_RESTRICTED');
+    };
+  })
+
+  it('should reject registered usernames', function(){
+    for (var i = credentials.length - 1; i >= 0; i--) {
+      u = users.addUser({name: credentials[i].name});
+      u.status.should.equal('fail');
+      u.data.should.include('USER_NAME_REGISTERED');
+    };
+  })
+  
+  it('should add First user', function () {
+    u = users.addUser({name: 'First'});
+    should(u.status).equal('ok');
+    first = u.data;
+  });
+
+  it('should reject already online usernames',function(){
+    var u = users.addUser({name: first.name});
+    u.status.should.equal('fail');
+    u.data.should.include('USER_NAME_ALREADY_ONLINE');
+  })
+
+  it('should find "First" in online', function () {
+    find = users.find({name:'First'})
+    should(find.foundBy).equal('name');
+    should(find.foundIn).equal('online');
+  });
+
+  it('should return first user "First"', function(){
+    users.list[0].should.equal(first);
+  })
+
+  it('should find "Admin" in registered', function () {
+    find = users.find({name:'Admin'})
+    find.foundBy.should.equal('name');
+    find.foundIn.should.equal('registered');
+  });
+
+  it('should kick user by ID', function () {
+    u = users.addUser({name:'kickMe'}).data;
+    users.find({name:u.name}).should.be.ok;
+    users.kickUser(u.id);
+    users.find({name:u.name}).should.be.false;
+  });
   
 
-  describe('.addUser()', function(){
-    var o = {
-
-    }
-
-    it('should reject empty username',function(){
-      var u = users.addUser({name:''});
-      u.status.should.equal('fail');
-      u.data[0].should.equal('USER_NAME_TOO_SHORT');
-    })
-
-    it('should reject empty call',function(){
-      var u = users.addUser();
-      u.status.should.equal('fail');
-      u.data[0].should.equal('USER_EMPTY_CALL');
-    })
-    
-    /* ADD USER "Pierwszy" */
-    pierwszy = users.addUser({name: 'Pierwszy'}).data;
-
-    it('should reject already online usernames',function(){
-      var u = users.addUser({name: 'Pierwszy'});
-      u.status.should.equal('fail');
-      u.data[0].should.equal('USER_NAME_ALREADY_ONLINE');
-    })
-
-    it('should reject restricted usernames', function() {
-      var u = users.addUser();
-    })
-    
-  })
-
-  describe('.list', function(){
-    /*it('should return empty list of users', function(){
-      users.list.should.eql([]);
-    })*/
-
-    it('should return first user "Pierwszy"', function(){
-      users.list[0].should.equal(pierwszy);
-    })
-  })
 })
+

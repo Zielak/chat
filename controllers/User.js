@@ -152,7 +152,6 @@ var users = (function () {
     }
   }
 
-  // TODO: rename to kickUser!
   var kickUser = function(id){
     for(var i = _online.length - 1; i >= 0; i--) {
       if(_online[i].id === id) {
@@ -182,8 +181,10 @@ var users = (function () {
       byWhat = 'id'
     }
 
+    /*
     console.log('where',where)
     console.log('byWhat',byWhat)
+    */
 
     if(where === 'everywhere' || where === 'online')
       for(var i = _online.length - 1; i >= 0; i--) {
@@ -199,10 +200,12 @@ var users = (function () {
         }
       }
 
+    /*
     console.log("USER.FIND: looging for:", o)
     console.log("USER.FIND: found:", found);
     console.log("USER.REGISTERED:",_registered);
     console.log("USER.ONLINE:",_online);
+    */
 
     return found;
   }
