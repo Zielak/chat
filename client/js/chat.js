@@ -1,10 +1,8 @@
 'use strict';
 
-var app = angular.module('chatApp', [
-  'chatApp.filters',
-  'chatApp.directives',
-  'toaster'
-]);
+var app = angular.module('chatApp', [ 'ngAnimate', 'toaster' ]);
+
+
 
 app.animation('.message-animate', function() {
   return {
@@ -193,7 +191,7 @@ window.onload = function() {
 
 /* Controllers */
 
-function ChatCtrl($scope, socket, toaster) {
+app.controller('chatCtrl', ['$scope', 'socket', 'toaster', function($scope, socket, toaster){
 
   $scope.loginScreen = true;
   $scope.loginPassword = '';
@@ -330,51 +328,49 @@ function ChatCtrl($scope, socket, toaster) {
     toaster.pop(type, title, text);
   };
 
-}
+}]);
 
 
 /* Directives */
 
-angular.module('chatApp.directives', []).
-  directive('appVersion', function (version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
-  }).
-  directive('message', function () {
-    return {
-      scope: {
-        item: '=message'
-      },
-      restrict: 'EA',
-      templateUrl: 'ng-templates/message.html'
-      };
-  }).
-  directive('user', function () {
-    return {
-      scope: {
-        item: '=user'
-      },
-      restrict: 'EA',
-      templateUrl: 'ng-templates/user.html'
-      };
-  });
+app.directive('appVersion', function (version) {
+  return function(scope, elm, attrs) {
+    elm.text(version);
+  };
+})
+app.directive('message', function () {
+  return {
+    scope: {
+      item: '=message'
+    },
+    restrict: 'EA',
+    templateUrl: 'ng-templates/message.html'
+  };
+})
+app.directive('user', function () {
+  return {
+    scope: {
+      item: '=user'
+    },
+    restrict: 'EA',
+    templateUrl: 'ng-templates/user.html'
+  };
+});
 
 
 
 /* Filters */
 
-angular.module('chatApp.filters', []).
-  filter('interpolate', function (version) {
-    return function (text) {
-      return String(text).replace(/\%VERSION\%/mg, version);
-    }
-  })
-  .filter('reverse', function() {
-    return function(items) {
-      return items.slice().reverse();
-    };
-  })
+app.filter('interpolate', function (version) {
+  return function (text) {
+    return String(text).replace(/\%VERSION\%/mg, version);
+  }
+});
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});
 
 
 

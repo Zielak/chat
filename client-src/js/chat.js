@@ -1,10 +1,8 @@
 'use strict';
 
-var app = angular.module('chatApp', [
-  'chatApp.filters',
-  'chatApp.directives',
-  'toaster'
-]);
+var app = angular.module('chatApp', [ 'ngAnimate', 'toaster' ]);
+
+
 
 app.animation('.message-animate', function() {
   return {

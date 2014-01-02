@@ -1,6 +1,6 @@
 /* Controllers */
 
-function ChatCtrl($scope, socket, toaster) {
+app.controller('chatCtrl', ['$scope', 'socket', 'toaster', function($scope, socket, toaster){
 
   $scope.loginScreen = true;
   $scope.loginPassword = '';
@@ -137,4 +137,4 @@ function ChatCtrl($scope, socket, toaster) {
     toaster.pop(type, title, text);
   };
 
-}
+}]);

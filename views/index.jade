@@ -1,7 +1,7 @@
 extends layout
 
 block body
-  div.container(ng-controller="ChatCtrl")
+  div.container(ng-controller="chatCtrl")
     toaster-container(toaster-options="{'position-class': 'toast-top-right'}")
     .login(ng-show="loginScreen")
       .login-form
@@ -45,18 +45,10 @@ block body
           div.user(ng-repeat="u in users")
             p
               a {{u.name}}
-    //-
-      .row
-        .col.span_12
-          h3 Change your name
-          p Your current user name is {{name}}
-          form(ng-submit="changeName()")
-            input(ng-model="newName")
-            input(type="submit", value="Change Name")
-  script(src="http://code.jquery.com/jquery-2.0.3.min.js")
-  //script(src="/socket.io/socket.io.js")
+  //script(src="http://code.jquery.com/jquery-2.0.3.min.js")
+  script(src="/js/socket.io.js")
+  script(src="/js/angular.js")
+  script(src="/js/angular-animate.js")
   script(src="/js/socket.js")
   script(src="/js/toaster.js")
-  script(src="/js/angular.min.js")
-  script(src="/js/angular-animate.min.js")
   script(src="/js/chat.js")
