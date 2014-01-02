@@ -7,6 +7,14 @@ var port = 1991;
 // var nano = require('nano')('http://localhost:5984');
 var config = require('./config');
 var credentials = require('./credentials');
+/*
+var mongo = require('mongodb').MongoClient;
+mongo.connect(config.mongo.link, function(err, db) {
+  if(!err) {
+    console.log("We are connected");
+  }
+});
+*/
 
 var routes = require('./routes');
 
