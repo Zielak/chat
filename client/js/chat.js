@@ -344,7 +344,7 @@ app.directive('message', function () {
       item: '=message'
     },
     restrict: 'EA',
-    templateUrl: 'ng-templates/message.html'
+    templateUrl: 'directives/message.html'
   };
 })
 app.directive('user', function () {
@@ -353,7 +353,7 @@ app.directive('user', function () {
       item: '=user'
     },
     restrict: 'EA',
-    templateUrl: 'ng-templates/user.html'
+    templateUrl: 'directives/user.html'
   };
 });
 
