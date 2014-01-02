@@ -187,8 +187,6 @@ window.onload = function() {
 
 
 
-
-
 /* Controllers */
 
 app.controller('chatCtrl', ['$scope', 'socket', 'toaster', function($scope, socket, toaster){
@@ -329,6 +327,7 @@ app.controller('chatCtrl', ['$scope', 'socket', 'toaster', function($scope, sock
   };
 
 }]);
+
 
 
 /* Directives */

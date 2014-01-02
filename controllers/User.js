@@ -47,6 +47,11 @@ var users = (function () {
     /*if( o.name.search(/[^a-z0-9]/gi) >= 0 ){
       o.name = o.name.replace(/[^a-z0-9]/gi,'');
     }*/
+    if(typeof o === 'undefined'){
+      errors.push("USER_EMPTY_CALL");
+      return errors;
+    }
+
     o.name = sanitizer.sanitize(o.name);
     
     // Undefined?
