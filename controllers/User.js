@@ -3,6 +3,8 @@ var moment = require('moment');
 
 var config = require('../config');
 
+var db = require('../controllers/database');
+
 
 
 //console.log( 'USERS: initing', moment().format('YYYYMMDDHHmmssSS') );
@@ -11,6 +13,7 @@ var config = require('../config');
 function User(id, name, group, pass){
   this.id = id;
   this.name = name;
+  // groups: 'guests', 'mods', 'admins'
   this.group = group || 'guests';
   this.pass = pass || false;
 
@@ -27,6 +30,16 @@ function User(id, name, group, pass){
 }
 User.prototype = {
   constructor: User
+}
+
+
+function Credentials(name, group, pass){
+  this.name = name;
+  this.pass = pass || false;
+  this.group = group || 'guests';
+}
+Credentials.prototype = {
+  constructor: Credentials
 }
 
 
@@ -91,8 +104,6 @@ var users = (function () {
     return errors;
   }
 
-
-
   var addUser = function(o){
     var errors = validateNewUsername(o);
     
@@ -112,11 +123,14 @@ var users = (function () {
     if(errors.length > 0){
       return { status: 'fail', data: errors };
     }else{
+      var newCreds = new Credentials(o.name, o.group, o.pass);
       var newGuy = new User(o.id, o.name, o.group, o.pass);
       _registered.push(newGuy);
-      // TODO: push this guy to database or something
+
+      // register username into database
+      db.users.insert(newCreds);
       
-      return {status: 'ok', data: newGuy };
+      return {status: 'ok', data: newGuy};
     }
   }
 

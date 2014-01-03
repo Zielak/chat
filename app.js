@@ -1,23 +1,18 @@
 'use strict';
 
+var config = require('./config');
+var configDatabase = require('./config-database');
+
 var express = require('express');
 var app = express();
-var port = 1991;
+var port = config.app.port;
 
-// var nano = require('nano')('http://localhost:5984');
-var config = require('./config');
+// TODO: Remove credentials and use `db` instead
 var credentials = require('./credentials');
-/*
-var mongo = require('mongodb').MongoClient;
-mongo.connect(config.mongo.link, function(err, db) {
-  if(!err) {
-    console.log("We are connected");
-  }
-});
-*/
+var db = require('./controllers/database');
 
 var routes = require('./routes');
-
+ 
 var socket = require('./controllers/socket.js');
 var users = require('./controllers/User.js');
 var messages = require('./controllers/Message.js');
@@ -28,8 +23,6 @@ var messages = require('./controllers/Message.js');
 
 // Hook Socket.io into Express
 var io = require('socket.io').listen(app.listen(port));
-
-//console.log("Listening on port " + port);
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -79,22 +72,3 @@ app.get('*', routes.index);
 
 // Socket.io Communication
 io.sockets.on('connection', socket );
-
-
-
-
-
-
-
-/* =============================================
- *              Credentials Init
- * ===========================================*/
-for (var i = credentials.length - 1; i >= 0; i--) {
-  var u = credentials[i];
-  users.registerUser({
-    id: false,
-    name: u.name,
-    group: u.group,
-    pass: u.pass
-  })
-};

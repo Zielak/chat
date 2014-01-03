@@ -1,5 +1,14 @@
 var config = {}
 
+config.app = {
+  port: 1991,
+
+  admin: {
+    name: "Admin",
+    pass: "error"
+  }
+}
+
 
 /*
   How does antiFlood work here?
@@ -18,13 +27,8 @@ config.antiFlood = {
 }
 
 config.moderation = {
-  active: true
+  active: false
 }
-
-config.mongo = {
-  link: "mongodb://localhost:27017/chatDb"
-}
-
 config.user = {
   name: {
     min_length: 2
