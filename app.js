@@ -1,15 +1,49 @@
 'use strict';
 
+// Chat configuration
 var config = require('./config');
-var configDatabase = require('./config-database');
+var configDB = require('./config-database');
+
+// Load NODE stuff
+var format = require('util').format;
 
 var express = require('express');
 var app = express();
 var port = config.app.port;
 
 // TODO: Remove credentials and use `db` instead
-var credentials = require('./credentials');
-var db = require('./controllers/database');
+//var credentials = require('./credentials');
+
+var credentials = require('./controllers/Credentials');
+var mongo = require('mongodb').MongoClient;
+
+mongo.connect(format('mongodb://%s:%s@%s:%d/%s',configDB.user, configDB.pass, configDB.host, configDB.port, configDB.name), function(err, db) {
+  if(err) throw err;
+
+  var col = db.collection('credentials');
+  var admin = config.app.admin;
+  col.findOne({name: admin.name}, function(err, docs){
+    
+    if(docs === null){
+      console.warn("MONGO: Can't find default admin! I\'m gonna create one from config.js");
+
+      var creds = credentials.storeCreds(admin.name, 'admins', admin.pass);
+
+      col.insert(creds, function(err, docs){
+        console.log("MONGO: Chat Admin created.");
+      })
+    }
+  });
+
+  console.log("MONGO: Init complete");
+  
+
+})
+
+
+
+
+
 
 var routes = require('./routes');
  

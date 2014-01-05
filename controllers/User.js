@@ -2,12 +2,9 @@ var sanitizer = require('sanitizer');
 var moment = require('moment');
 
 var config = require('../config');
-
-var db = require('../controllers/database');
-
+var credentials = require('./Credentials');
 
 
-//console.log( 'USERS: initing', moment().format('YYYYMMDDHHmmssSS') );
 
 
 function User(id, name, group, pass){
@@ -17,7 +14,7 @@ function User(id, name, group, pass){
   this.group = group || 'guests';
   this.pass = pass || false;
 
-  // ### Accitional properties
+  // ### Additional properties
 
   // Is user hidden from users list?
   this.hidden = false;
@@ -25,7 +22,7 @@ function User(id, name, group, pass){
   // This is anti-flood timer
   this.timer = 0;
 
-  // Points to user's last message
+  // That was the user's last message
   this.lastMessage = {};
 }
 User.prototype = {
@@ -33,26 +30,28 @@ User.prototype = {
 }
 
 
-function Credentials(name, group, pass){
-  this.name = name;
-  this.pass = pass || false;
-  this.group = group || 'guests';
-}
-Credentials.prototype = {
-  constructor: Credentials
-}
+
 
 
 var users = (function () {
-//module.exports = function(){
   var _online = [];
   var _registered = [];
   var _updating = false;
   
 
+  /**
+  * Validates if name is acceptable, not harmful,
+  * not taken or not registered.
+  *
+  * @method validateNewUsername
+  * @param {Object} whole User object, only .name is validated now though.
+  * @return {Array} array with list of error codes, if empty - everything is OK.
+  */
 
+  // TODO: Convert this for validateNewUser ? I could also use that in loginUser()
   function validateNewUsername(o){
     var errors = [];
+
     // TODO: check if user ID already is logged in
     
     // sanitize without warning..
@@ -104,6 +103,18 @@ var users = (function () {
     return errors;
   }
 
+
+
+
+
+
+  /**
+  * Tries to add new user from socket to _online table
+  *
+  * @method addUser
+  * @param {Object} whole User object from socket, needs to have id, name, group, and pass (if any)
+  * @return {Object} object with data and status params.
+  */
   var addUser = function(o){
     var errors = validateNewUsername(o);
     
@@ -117,23 +128,35 @@ var users = (function () {
     }
   }
 
+  /**
+  * User registration, or more like 'username' reservation with password
+  *
+  * @method registerUser
+  * @param {Object} whole User object from socket, needs to have id, name, group, and pass (if any)
+  * @return {Object} object with data and status params.
+  */
   var registerUser = function(o){
     var errors = validateNewUsername(o);
     
     if(errors.length > 0){
       return { status: 'fail', data: errors };
     }else{
-      var newCreds = new Credentials(o.name, o.group, o.pass);
+      // Store credentials
+      var newCreds = credentials.storeCreds(o.name, o.group, o.pass);
       var newGuy = new User(o.id, o.name, o.group, o.pass);
       _registered.push(newGuy);
-
-      // register username into database
-      db.users.insert(newCreds);
       
       return {status: 'ok', data: newGuy};
     }
   }
 
+  /**
+  * Login registered user. 
+  *
+  * @method loginUser
+  * @param {Object} whole User object from socket, needs to have id, name, and pass
+  * @return {Object} object with data and status params. Data can provide errors or new User object
+  */
   var loginUser = function(o){
     var errors = [];
 
@@ -166,13 +189,23 @@ var users = (function () {
     }
   }
 
+  /**
+  * Kicks user from chat. It can be called manually by mod or admin
+  * but it's also used when user disconnects from socket 
+  *
+  * @method kickUser
+  * @param {Number} ID of user to kick
+  * @return {Object} object with data and status params. Data can provide errors or new User object
+  */
   var kickUser = function(id){
+    //TODO: Return error if ID wasn't found! (kicked too late?)
     for(var i = _online.length - 1; i >= 0; i--) {
       if(_online[i].id === id) {
         _online.splice(i, 1);
         //delete _list[i];
       }
     }
+    return {status: 'ok'}
   };
 
   var changeName = function(id, name){
@@ -185,6 +218,13 @@ var users = (function () {
     }
   }
 
+  /**
+  * Look for a given user in _registered or _online tables
+  *
+  * @method find
+  * @param {Object} object with parameters 'byWhat' (name or id), 'where' (online, registered or everywhere), and strings that we're looking for: name or id.
+  * @return {Object} object with foundBy, foundIn and user object
+  */
   var find = function(o){
     var found = false;
     var where = (typeof o.where !== 'undefined') ? o.where : 'everywhere';
@@ -236,8 +276,6 @@ var users = (function () {
     changeName: changeName,
     find: find
   };
-//};
 }());
 
 module.exports = users;
-//exports.list = users;

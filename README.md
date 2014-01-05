@@ -12,4 +12,9 @@ Right now there are lots of features to be added:
   - chat archives
 * private messages
 * rooms
-* user profiles
+* store user passwords
+
+
+## Installation
+
+You need to create your own `config-database.js` file, use a sample file, rename it and change example values to match your MongoDB database.
