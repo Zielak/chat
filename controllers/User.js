@@ -1,6 +1,8 @@
 var sanitizer = require('sanitizer');
 var moment = require('moment');
 
+var db = require('./Database');
+
 var config = require('../config');
 var credentials = require('./Credentials');
 
@@ -39,6 +41,12 @@ var users = (function () {
   var _updating = false;
   
 
+
+  // Get all registered usernames
+  _registered = credentials.all;
+  console.log('UERS: _registered:', _registered);
+
+
   /**
   * Validates if name is acceptable, not harmful,
   * not taken or not registered.
@@ -67,9 +75,9 @@ var users = (function () {
     o.name = sanitizer.sanitize(o.name);
     
     // Undefined?
-    /*if( o.name === 'undefined' ){
+    if( o.name === 'undefined' ){
       o.name = '';
-    }*/
+    }
 
     // Check length
     if( o.name.length < config.user.name.min_length ){
@@ -142,7 +150,7 @@ var users = (function () {
       return { status: 'fail', data: errors };
     }else{
       // Store credentials
-      var newCreds = credentials.storeCreds(o.name, o.group, o.pass);
+      var newCreds = credentials.storeCreds(o);
       var newGuy = new User(o.id, o.name, o.group, o.pass);
       _registered.push(newGuy);
       

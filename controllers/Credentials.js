@@ -1,6 +1,8 @@
 var crypto = require('crypto');
-var mongo = require('mongodb').MongoClient;
 
+var config = require('../config');
+
+var db = require('./Database');
 
 
 function Credentials(name, group, pass){
@@ -16,21 +18,48 @@ Credentials.prototype = {
 
 
 
-
 var credentials = (function () {
+
+  var col = db.get('credentials');
+
+  // Will contain every registered username
+  var _all = [];
+  col.find({}, function(err, docs){
+    _all = docs;
+    console.log('CREDENTIALS: docs = ',docs);
+  });
+  console.log('CREDENTIALS: _all contains: ',_all);
+
+  // One time init, create ADMIN user if nonexistent
+  var admin = config.app.admin;
+  col.findOne({name: admin.name}, function(err, docs){
+    if(docs === null){
+      console.warn("CREDENTIALS: Can't find default admin! I\'m gonna create one from config.js");
+
+      var creds = credentials.storeCreds({
+        name:admin.name,
+        group:'admins',
+        pass:admin.pass
+      });
+
+      console.log("CREDENTIALS: Chat Admin created.");
+    }
+  });
 
   var storeCreds = function(o){
     var creds = new Credentials(o.name, o.group, o.pass);
-    var col = mongo.collection('credentials');
+    var col = db.get('credentials');
     col.insert(creds);
+    _all.push(creds);
 
     return { status:'ok', data:creds }
   }
 
 
   return {
-    storeCreds: storeCreds,
+    all: _all,
 
+    storeCreds: storeCreds,
   }
 })();
 

@@ -9,7 +9,8 @@
     "jade": "latest",
     "sanitizer": "latest",
     "moment": "latest",
-    "mongodb": "latest"
+    "mongodb": "latest",
+    "monk": "~0.7.1"
   },
   "author": "Zielak",
   "devDependencies": {

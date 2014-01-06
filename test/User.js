@@ -2,9 +2,9 @@ var
   should = require('should'),
   //app = require('../app.js'),
   app = require('../app.js'),
-  users = require('../controllers/User.js'),
+  users = require('../controllers/User'),
   config = require('../config'),
-  credentials = require('../credentials')
+  credentials = require('../controllers/Credentials')
 ;
 
 describe('User', function(){
@@ -41,8 +41,8 @@ describe('User', function(){
   })
 
   it('should reject registered usernames', function(){
-    for (var i = credentials.length - 1; i >= 0; i--) {
-      u = users.addUser({name: credentials[i].name});
+    for (var i = credentials.all.length - 1; i >= 0; i--) {
+      u = users.addUser({name: credentials.all[i].name});
       u.status.should.equal('fail');
       u.data.should.include('USER_NAME_REGISTERED');
     };
@@ -71,9 +71,9 @@ describe('User', function(){
   })
 
   it('should find "Admin" in registered', function () {
-    find = users.find({name:'Admin'})
-    find.foundBy.should.equal('name');
-    find.foundIn.should.equal('registered');
+    find = users.find({name:'Admin'});
+    should(find.foundBy).equal('name');
+    should(find.foundIn).equal('registered');
   });
 
   it('should kick user by ID', function () {
