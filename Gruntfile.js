@@ -9,7 +9,7 @@
         globals: ['should'],
         timeout: 3000,
         ignoreLeaks: false,
-        grep: '*-test',
+        // grep: '*-test',
         ui: 'bdd',
         reporter: 'tap'
       },

@@ -10,7 +10,10 @@
     "sanitizer": "latest",
     "moment": "latest",
     "mongodb": "latest",
-    "monk": "~0.7.1"
+    "monk": "~0.7.1",
+    "body-parser": "~1.15.2",
+    "serve-favicon": "~2.3.0",
+    "method-override": "~2.3.6"
   },
   "author": "Zielak",
   "devDependencies": {

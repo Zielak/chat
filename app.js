@@ -9,6 +9,10 @@ var express = require('express');
 var app = express();
 var port = config.app.port;
 
+var bodyParser = require('body-parser');
+var serveFavicon = require('serve-favicon');
+var methodOverride = require('method-override');
+
 // Database stuff
 var db = require('./controllers/Database');
 var credentials = require('./controllers/Credentials');
@@ -28,19 +32,18 @@ var messages = require('./controllers/Message.js');
 // Hook Socket.io into Express
 var io = require('socket.io').listen(app.listen(port));
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.set('view options', {
-    layout: false
-  });
-  app.use(express.json());
-  app.use(express.favicon());
-  app.use(express.urlencoded());
-  app.use(express.methodOverride());
-  app.use(express.static(__dirname + '/client'));
-  app.use(app.router);
+// app.configure(function(){
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.set('view options', {
+  layout: false
 });
+app.use(bodyParser.json());
+// app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(bodyParser.urlencoded());
+app.use(methodOverride('X-HTTP-Method'));
+app.use(express.static(__dirname + '/client'));
+// });
 
 /* Not needed for now, I alwasy want errors
 app.configure('development', function(){
