@@ -62,6 +62,7 @@ app.configure('production', function(){
 // serve index and view partials
 app.get('/', routes.index);
 app.get('/partials/:name', routes.partials);
+
 // fix from http://stackoverflow.com/questions/15054987/express-and-angularjs-web-page-freezes-when-attempting-to-open-home-page
 /*app.get('partials/:name', function(request, response) {
   var name = request.params.name;

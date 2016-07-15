@@ -22,13 +22,13 @@ describe('User', function(){
   it('should reject empty call',function(){
     u = users.addUser();
     u.status.should.equal('fail');
-    u.data.should.include('USER_EMPTY_CALL');
+    u.data.should.containEql('USER_EMPTY_CALL');
   })
 
   it('should reject empty or short username',function(){
     u = users.addUser({name:''});
     u.status.should.equal('fail');
-    u.data.should.include('USER_NAME_TOO_SHORT');
+    u.data.should.containEql('USER_NAME_TOO_SHORT');
   })
 
   it('should reject restricted usernames', function(){
@@ -36,7 +36,7 @@ describe('User', function(){
     for (var i = restricted.length - 1; i >= 0; i--) {
       u = users.addUser({name: restricted[i]});
       u.status.should.equal('fail');
-      u.data.should.include('USER_NAME_RESTRICTED');
+      u.data.should.containEql('USER_NAME_RESTRICTED');
     };
   })
 
@@ -44,7 +44,7 @@ describe('User', function(){
     for (var i = credentials.all.length - 1; i >= 0; i--) {
       u = users.addUser({name: credentials.all[i].name});
       u.status.should.equal('fail');
-      u.data.should.include('USER_NAME_REGISTERED');
+      u.data.should.containEql('USER_NAME_REGISTERED');
     };
   })
   
@@ -57,7 +57,7 @@ describe('User', function(){
   it('should reject already online usernames',function(){
     var u = users.addUser({name: first.name});
     u.status.should.equal('fail');
-    u.data.should.include('USER_NAME_ALREADY_ONLINE');
+    u.data.should.containEql('USER_NAME_ALREADY_ONLINE');
   })
 
   it('should find "First" in online', function () {
@@ -72,8 +72,8 @@ describe('User', function(){
 
   it('should find "Admin" in registered', function () {
     find = users.find({name:'Admin'});
-    should(find.foundBy).equal('name');
-    should(find.foundIn).equal('registered');
+    find.foundBy.should.equal('name');
+    find.foundIn.should.equal('registered');
   });
 
   it('should kick user by ID', function () {

@@ -1,4 +1,10 @@
 var assert = require("assert");
+var 
+  app = require('../app.js'),
+  users = require('../controllers/User'),
+  config = require('../config'),
+  credentials = require('../controllers/Credentials'),
+  db = require('../controllers/Database');
 
 
 describe('Array', function(){
@@ -9,3 +15,12 @@ describe('Array', function(){
     })
   })
 })
+
+
+describe('Database', function(){
+  it('should insert test log', function(){
+    assert(db.logs.insert({ woot: 'foo' }));
+  })
+})
+
+
