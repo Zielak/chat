@@ -1,3 +1,4 @@
+
 var assert = require("assert");
 var 
   app = require('../app.js'),
@@ -6,6 +7,7 @@ var
   credentials = require('../controllers/Credentials'),
   db = require('../controllers/Database');
 
+console.log('IN test');
 
 describe('Array', function(){
   describe('#indexOf()', function(){
@@ -14,13 +16,16 @@ describe('Array', function(){
       assert.equal(-1, [1,2,3].indexOf(0));
     })
   })
-})
+});
 
 
 describe('Database', function(){
   it('should insert test log', function(){
+    console.log('in Database test');
     assert(db.logs.insert({ woot: 'foo' }));
   })
 })
 
 
+
+console.log('OUT tests');

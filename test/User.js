@@ -7,6 +7,8 @@ var
   credentials = require('../controllers/Credentials')
 ;
 
+console.log('IN User test');
+
 describe('User', function(){
 
   /*beforeEach(function(){
@@ -86,3 +88,4 @@ describe('User', function(){
 
 })
 
+console.log('OUT User test');
