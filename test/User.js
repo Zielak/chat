@@ -7,8 +7,6 @@ var
   credentials = require('../controllers/Credentials')
 ;
 
-console.log('IN User test');
-
 describe('User', function(){
 
   /*beforeEach(function(){
@@ -74,8 +72,9 @@ describe('User', function(){
 
   it('should find "Admin" in registered', function () {
     find = users.find({name:'Admin'});
-    find.foundBy.should.equal('name');
-    find.foundIn.should.equal('registered');
+    should.exist(find, "doesn't exist");
+    should.equal(find.foundBy, 'name');
+    should.equal(find.foundIn, 'registered');
   });
 
   it('should kick user by ID', function () {
@@ -88,4 +87,3 @@ describe('User', function(){
 
 })
 
-console.log('OUT User test');

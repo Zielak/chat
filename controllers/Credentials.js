@@ -1,5 +1,4 @@
 var crypto = require('crypto');
-
 var config = require('../config');
 
 var db = require('./Database');
@@ -20,21 +19,24 @@ Credentials.prototype = {
 
 var credentials = (function () {
 
-  var col = db.get('credentials');
-
   // Will contain every registered username
   var _all = [];
-  col.find({}, function(err, docs){
+
+  var _creds = db.get('credentials');
+  // console.log(_creds);
+
+  // Promise!
+  _creds.find({}, function(docs){
     _all = docs;
-    console.log('CREDENTIALS: docs = ',docs);
+    console.log('CREDENTIALS: _all contains: ',_all);
   });
-  console.log('CREDENTIALS: _all contains: ',_all);
+
 
   // One time init, create ADMIN user if nonexistent
   var admin = config.app.admin;
-  col.findOne({name: admin.name}, function(err, docs){
+  _creds.findOne({name: admin.name}, function(docs){
     if(docs === null){
-      console.warn("CREDENTIALS: Can't find default admin! I\'m gonna create one from config.js");
+      console.warn("CREDENTIALS: Can't find default admin! I'm gonna create one from config.js");
 
       var creds = credentials.storeCreds({
         name:admin.name,
@@ -47,12 +49,11 @@ var credentials = (function () {
   });
 
   var storeCreds = function(o){
-    var creds = new Credentials(o.name, o.group, o.pass);
-    var col = db.get('credentials');
-    col.insert(creds);
-    _all.push(creds);
+    var item = new Credentials(o.name, o.group, o.pass);
+    _creds.insert(item);
+    _all.push(_creds);
 
-    return { status:'ok', data:creds }
+    return { status:'ok', data:_creds }
   }
 
 

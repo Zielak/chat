@@ -7,7 +7,6 @@ var
   credentials = require('../controllers/Credentials'),
   db = require('../controllers/Database');
 
-console.log('IN test');
 
 describe('Array', function(){
   describe('#indexOf()', function(){
@@ -20,12 +19,23 @@ describe('Array', function(){
 
 
 describe('Database', function(){
+
+  it('should be connected', function(){
+    console.log('DATABASE TEST' ,db);
+    console.log('DATABASE._state: ', db._state);
+  });
+
   it('should insert test log', function(){
-    console.log('in Database test');
-    assert(db.logs.insert({ woot: 'foo' }));
+    var collection = db.get('logs');
+
+    collection.insert({ woot: 'foo' }).then(function(docs){
+      console.log('added!');
+    }).catch(function(err){
+      console.log('error D:');
+    }).then(function(){
+      db.close()
+    })
   })
 })
 
 
-
-console.log('OUT tests');

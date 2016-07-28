@@ -40,7 +40,7 @@ app.set('view options', {
 });
 app.use(bodyParser.json());
 // app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('X-HTTP-Method'));
 app.use(express.static(__dirname + '/client'));
 // });
