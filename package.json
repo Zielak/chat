@@ -1,19 +1,19 @@
 {
-  "name": "Chat",
+  "name": "chat",
   "version": "0.0.2",
   "description": "Real time web chat",
   "dependencies": {
-    "socket.io": "latest",
-    "nano": "latest",
+    "body-parser": "~1.15.2",
     "express": "latest",
-    "jade": "latest",
-    "sanitizer": "latest",
+    "method-override": "~2.3.6",
     "moment": "latest",
     "mongodb": "latest",
     "monk": "~0.7.1",
-    "body-parser": "~1.15.2",
+    "nano": "latest",
+    "pug": "^2.0.0-beta4",
+    "sanitizer": "latest",
     "serve-favicon": "~2.3.0",
-    "method-override": "~2.3.6"
+    "socket.io": "latest"
   },
   "author": "Zielak",
   "devDependencies": {

@@ -1,5 +1,5 @@
 {
-  "name":  "Chat",
+  "name": "chat",
   "version": "0.0.2",
   "dependencies": {
     "angular": "latest",
